@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>何らかのJavascript</title>
+	</head>
+	<body>
+		<div>
+			<div>
+				<select id="select_file" size="1">
+				</select>
+				<input type="file" id="input_file" accept=".pak" multiple>
+				<label for="input_file">ファイルを追加ボタンになる</label>
+			</div>
+			<table id="select_inportaddon">
+				<tr><th></th><th>アドオン</th><th>ソースファイル</th><th>ソースファイル日時</th></tr>
+			</table>
+			<div>
+				<button id="button_01" onclick="button_click_01()">ファイルを削除(準備中/作らないかも)</button>
+				<button id="button_02" onclick="">単独pakファイル出力(準備中)</button>
+				<button id="button_add_addon" onclick="">アドオン追加 ＞</button>
+				<button id="button_del_addon" onclick="">リストからアドオン削除</button>
+				<button id="button_export_addon" onclick="">リストのアドオンを出力</button>
+			</div>
+		</div>
+		<table id="select_outputaddon">
+			<tr><th></th><th>アドオン</th><th>ソースファイル</th><th>ソースファイル日時</th></tr>
+		</table>
+		<script type="text/javascript" src="main.js"></script>
+	</body>
+</html>
