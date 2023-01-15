@@ -104,7 +104,7 @@ table>tr td input:checked+div{
 	width: 1rem;
 	margin: auto;
 	border: 0;
-	background-color: #333132;
+	background-color: #000000;
 	border-radius: 45%;
 }
 table>tr:hover{

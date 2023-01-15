@@ -23,11 +23,8 @@ class Addon{
 		this.file = {date:fileDate,name:fileName}
 		this.add = false;
 	}
-	getAdd() {
-		return this.add;
-	}
-	setAdd() {
-		this.add = !this.add
+	fileSet() {
+		return this.file.name+" "+this.file.date
 	}
 }
 //リトルエンディアンを数値にもどすコード
@@ -74,6 +71,10 @@ HTML_INPUT_FILE.addEventListener("change",(event) => {
 			}
 			//ダブってなければ処理
 			if (!(duplication)){
+				const FILE_NAME = document.createElement("option")
+				FILE_NAME.setAttribute("value",fileName+" "+fileDate)
+				FILE_NAME.innerHTML = fileName+" "+fileDate
+				HTML_SELECT_FILE.appendChild(FILE_NAME);
 				//ヘッダーの抽出
 				console.log("header", new TextDecoder().decode(sliceAndMove(ADDON_FILE, 57)));
 				console.log("PakVersion",binaryToInt(sliceAndMove(ADDON_FILE,4)));
@@ -133,7 +134,7 @@ HTML_INPUT_FILE.addEventListener("change",(event) => {
 			}
 		}
 		reader.readAsArrayBuffer(file);
-		//delete reader
+		delete reader
 	}
 });
 
@@ -143,32 +144,39 @@ function chageFile(){
 	HTML_SLELCT_IMPORT_ADOON.innerHTML = "<thead><tr><th></th><th>アドオン</th><th>ソースファイル</th><th>ソースファイル日時</th></tr></thead>";
 	if (inportAddons.length > 0){
 		inportAddons.forEach((value,index) => {
-			const ELEMENT_TR = document.createElement("tr");
-			ELEMENT_TR.setAttribute("id","import_" + index);
-			ELEMENT_TR.setAttribute("onClick","importTrClick("+ index +",event)");
+			if (HTML_SELECT_FILE.value == "all" || (HTML_SELECT_FILE.value == value.fileSet())){
+				const ELEMENT_TR = document.createElement("tr");
+				ELEMENT_TR.setAttribute("id","import_" + index);
+				ELEMENT_TR.setAttribute("onClick","importTrClick("+ index +",event)");
 
-			const ELEMENT_TD_CHECK = document.createElement("td");
-			const ELEMENT_CHECK = document.createElement("input");
-			const ELEMENT_CHECK_DUMMY = document.createElement("div");
-			ELEMENT_CHECK.setAttribute("type","checkbox");
-			ELEMENT_CHECK.setAttribute("disabled","");
-			ELEMENT_TD_CHECK.appendChild(ELEMENT_CHECK);
-			ELEMENT_TD_CHECK.appendChild(ELEMENT_CHECK_DUMMY);
-			ELEMENT_TR.appendChild(ELEMENT_TD_CHECK);
+				const ELEMENT_TD_CHECK = document.createElement("td");
+				const ELEMENT_CHECK = document.createElement("input");
+				const ELEMENT_CHECK_DUMMY = document.createElement("div");
+				ELEMENT_CHECK.setAttribute("type","checkbox");
+				ELEMENT_CHECK.setAttribute("disabled","");
+				if (select_imput_addon[0].indexOf(index) >= 0){
+					ELEMENT_CHECK.checked = true
+				}
+				ELEMENT_TD_CHECK.appendChild(ELEMENT_CHECK);
+				ELEMENT_TD_CHECK.appendChild(ELEMENT_CHECK_DUMMY);
+				ELEMENT_TR.appendChild(ELEMENT_TD_CHECK);
 
-			const ELEMENT_TD_ADOONNAME = document.createElement("td");
-			ELEMENT_TD_ADOONNAME.textContent = value.name.slice(0,-1);
-			ELEMENT_TR.appendChild(ELEMENT_TD_ADOONNAME);
+				const ELEMENT_TD_ADOONNAME = document.createElement("td");
+				ELEMENT_TD_ADOONNAME.textContent = value.name.slice(0,-1);
+				ELEMENT_TR.appendChild(ELEMENT_TD_ADOONNAME);
 
-			const ELEMENT_TD_FILENAME = document.createElement("td");
-			ELEMENT_TD_FILENAME.textContent = value.file.name;
-			ELEMENT_TR.appendChild(ELEMENT_TD_FILENAME);
+				const ELEMENT_TD_FILENAME = document.createElement("td");
+				ELEMENT_TD_FILENAME.textContent = value.file.name;
+				ELEMENT_TR.appendChild(ELEMENT_TD_FILENAME);
 
-			const ELEMENT_TD_FILEDDATE = document.createElement("td");
-			ELEMENT_TD_FILEDDATE.textContent = value.file.date;
-			ELEMENT_TR.appendChild(ELEMENT_TD_FILEDDATE);
-			
-			HTML_SLELCT_IMPORT_ADOON.appendChild(ELEMENT_TR);
+				const ELEMENT_TD_FILEDDATE = document.createElement("td");
+				ELEMENT_TD_FILEDDATE.textContent = value.file.date;
+				ELEMENT_TR.appendChild(ELEMENT_TD_FILEDDATE);
+				
+				HTML_SLELCT_IMPORT_ADOON.appendChild(ELEMENT_TR);
+			}else{
+				select_imput_addon[0] = select_imput_addon[0].filter(content => content != index);
+			}
 	})
 
 	}
@@ -229,7 +237,7 @@ function trClick(flag,index,event){
 
 function displayExportTable(){
 	HTML_SLELCT_EXPORT_ADOON.innerHTML = "<thead><tr><th></th><th>アドオン</th><th>ソースファイル</th><th>ソースファイル日時</th></tr></thead>";
-	select_imput_addon[0].sort(compareNumbers).forEach((value) => {
+	exportAddons.sort(compareNumbers).forEach((value) => {
 		inportAddons[value].add = true
 		document.getElementById("import_" + value).children[0].children[0].checked = false;
 
@@ -266,11 +274,15 @@ function displayExportTable(){
 
 }
 
-HTML_BUTTON_ADD_ADDON.addEventListener("click", displayExportTable);
+HTML_BUTTON_ADD_ADDON.addEventListener("click", function(){
+	exportAddons = Array.from(new Set(exportAddons.concat(select_imput_addon[0])))
+	displayExportTable()
+	select_imput_addon = [[]];
+});
 
 HTML_BUTTON_DEL_ADDON.addEventListener("click", function(){
 	select_output_addon[0].forEach((value) => {
-		select_imput_addon[0] = select_imput_addon[0].filter(content => content != value);
+		exportAddons = exportAddons.filter(content => content != value);
 	})
 	displayExportTable()
 	select_output_addon = [[]];
