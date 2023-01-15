@@ -41,7 +41,7 @@ body{
 	height: 3rem;
 	line-height: 3rem;
 }
-@media screen and (min-width:960px) {
+@media screen and (min-width:1280px) {
 	.column{
 		width: calc(50% - 4px);
 		height: calc(100vh - 9rem - 8px);
