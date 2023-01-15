@@ -300,6 +300,9 @@ HTML_BUTTON_EXPORT_ADDON.addEventListener("click", function(){
 			exportList.push(Number(value.id.slice("export_".length)))
 		}
 	})
+	if (exportList.length == 0){
+		return
+	}
 	const blob = new Blob([addonExport(exportList)],{type:"application/octet-stream"});
 	const link = document.createElement("a");
 	link.download = "Export.pak";

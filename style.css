@@ -1,13 +1,68 @@
+
+*{
+	margin: 0;
+	color: #333132;
+}
+body{
+	background: #fbe4e9;
+	background: linear-gradient(135deg, #fbe4e9 35%, #d2e5ac 100%);
+}
+.header{
+	padding: 0 1rem;
+	background-color: #a6c3ac;
+	font-size: 1.5rem;
+	height: 3rem;
+	line-height: 3rem;
+
+}
+#input_file{
+	display: none;
+}
+#select_file{
+	height: 2rem;
+	width: calc(100% - 8rem - 10px);
+	border: solid 1px #333132;
+}
+.flex{
+	margin: 2px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.column{
+	margin: 2px;
+	width: calc(100% - 4px);
+	height: calc((100vh - 9rem)/2 - 8px);
+}
+.column:nth-child(2){
+	order: 2;
+}
+.button_area{
+	width: 100%;
+	height: 3rem;
+	line-height: 3rem;
+}
+@media screen and (min-width:960px) {
+	.column{
+		width: calc(50% - 4px);
+		height: calc(100vh - 9rem - 8px);
+	}
+	.column:nth-child(2){
+		order: 0;
+	}
+	.head_button_area{
+		width: 50%;
+		height: 3rem;
+		line-height: 3rem;
+	}
+}
 .table_cover{
 	background-color: #FFFFFF;
-	border: solid #444444;
+	border: solid #333132;
 	border-width: 1px;
-	min-height: 3rem;
-	max-height: 18rem;
+	height: 100%;
 	max-width: 100%;
 	overflow: auto;
 }
-
 table{
 	border-collapse:collapse;
 	user-select: none;
@@ -19,7 +74,7 @@ table *{
 	padding: 0;
 }
 table thead tr{
-	background-color: aqua;
+	background-color: #a6c3ac;
 	height: 1.5rem;
 }
 table thead tr th{
@@ -33,7 +88,7 @@ table>tr{
 	height: 1.5rem;
 }
 table>tr:nth-child(even){
-	background-color: #EFEFEF;
+	background-color: #dcdcdc;
 }
 table>tr td{
 	padding: 2px;
@@ -49,9 +104,24 @@ table>tr td input:checked+div{
 	width: 1rem;
 	margin: auto;
 	border: 0;
-	background-color: #000000;
+	background-color: #333132;
 	border-radius: 45%;
 }
 table>tr:hover{
-	background-color: #BBBBBB;
+	background-color: #ccc2b6;
+}
+
+button{
+	background-color: #eee2d3;
+	border:solid #eee2d3 2px;
+	margin: 2px;
+	height: 2rem;
+	width: 8rem;
+}
+button:hover{
+	border:solid #8f7e61 2px;
+}
+button:active{
+	background-color: #ccc2b6;
+	border:solid #8f7e61 2px;
 }
