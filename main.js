@@ -5,8 +5,9 @@ const HTML_SELECT_FILE = document.getElementById("select_file")
 const HTML_BUTTON_ADD_ADDON = document.getElementById("button_add_addon")
 const HTML_BUTTON_DEL_ADDON = document.getElementById("button_del_addon")
 const HTML_BUTTON_EXPORT_ADDON = document.getElementById("button_export_addon")
+const HTML_BUTTON_SINGL_ADDON = document.getElementById("button_singl_addon")
 
-const SIMUTANS_PAK_HEADER = new Uint8Array([0x53,0x69,0x6D,0x75,0x74,0x72,0x61,0x6E,0x73,0x20,0x6F,0x62,0x6A,0x65,0x63,0x74,0x20,0x66,0x69,0x6C,0x65,0x0A,0x43,0x6F,0x6D,0x70,0x69,0x6C,0x65,0x64,0x20,0x77,0x69,0x74,0x68,0x20,0x53,0x69,0x6D,0x4F,0x62,0x6A,0x65,0x63,0x74,0x73,0x20,0x30,0x2E,0x31,0x2E,0x33,0x65,0x78,0x70,0x0A,0x1A])
+const SIMUTANS_PAK_HEADER = new Uint8Array([0x53,0x69,0x6D,0x75,0x74,0x72,0x61,0x6E,0x73,0x20,0x6F,0x62,0x6A,0x65,0x63,0x74,0x20,0x66,0x69,0x6C,0x65,0x0A,0x43,0x6F,0x6D,0x70,0x69,0x6C,0x65,0x64,0x20,0x77,0x69,0x74,0x68,0x20,0x53,0x69,0x6D,0x4F,0x62,0x6A,0x65,0x63,0x74,0x73,0x20,0x30,0x2E,0x31,0x2E,0x33,0x65,0x78,0x70,0x0A,0x1A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
 
 let inportFileContents = [];
 let inportAddons = [];
@@ -289,20 +290,43 @@ HTML_BUTTON_DEL_ADDON.addEventListener("click", function(){
 });
 
 function addonExport(indexList){
-	let exportBinary = Array.from(SIMUTANS_PAK_HEADER)
+	let position = 57
+	let exportBynaryLen = SIMUTANS_PAK_HEADER.length
+	indexList.forEach((value) => {
+		exportBynaryLen += inportAddons[value].binary.length
+	})
+	let exportBinary = new Uint8Array(exportBynaryLen)
+
+	SIMUTANS_PAK_HEADER.forEach((value,index) => {
+		exportBinary[index] = value
+	})
+
 	let intToBinary = ("00000000"+(1003).toString(16)).slice(-8)
 	for(let i = 0; i < 4; i++){
-		exportBinary.push(Number("0x" + intToBinary.slice(6-(i*2),8-(i*2))))
+		exportBinary[position] = Number("0x" + intToBinary.slice(8-2-(i*2),8-(i*2)))
+		position ++
 	}
-	new TextEncoder().encode("ROOT").forEach(value => exportBinary.push(value))
+	new TextEncoder().encode("ROOT").forEach((value) => {
+		exportBinary[position] = value
+		position ++
+	})
 	intToBinary = ("0000"+(indexList.length).toString(16)).slice(-4)
-	for(let i = 0; i < 4; i++){
-		exportBinary.push(Number("0x" + intToBinary.slice(2-(i*2),4-(i*2))))
+	for(let i = 0; i < 2; i++){
+		exportBinary[position] = Number("0x" + intToBinary.slice(4-2-(i*2),4-(i*2)))
+		position ++
+	}
+	intToBinary = ("0000").slice(-4)
+	for(let i = 0; i < 2; i++){
+		exportBinary[position] = Number("0x" + intToBinary.slice(4-2-(i*2),4-(i*2)))
+		position ++
 	}
 	indexList.forEach((value) => {
-		exportBinary = exportBinary.concat(Array.from(inportAddons[value].binary))
+		inportAddons[value].binary.forEach((bynary) => {
+			exportBinary[position] = bynary
+			position ++
+		})
 	})
-	return new Uint8Array(exportBinary)
+	return exportBinary
 }
 
 HTML_BUTTON_EXPORT_ADDON.addEventListener("click", function(){
@@ -316,9 +340,32 @@ HTML_BUTTON_EXPORT_ADDON.addEventListener("click", function(){
 		return
 	}
 	const blob = new Blob([addonExport(exportList)],{type:"application/octet-stream"});
+	let zip = new JSZip()
+	zip.file("addon.pak",blob)
+	zip.generateAsync({type:"blob",compression:"DEFLATE"})
+		.then(function(value){
 	const link = document.createElement("a");
-	link.download = "Export.pak";
-	link.href = URL.createObjectURL(blob);
+	link.download = "Export.zip";
+	link.href = URL.createObjectURL(value);
 	link.click();
-	URL.revokeObjectURL(link.href)
+	URL.revokeObjectURL(link.href);}
+	)
+})
+
+HTML_BUTTON_SINGL_ADDON.addEventListener("click", function(){
+	console.log(select_imput_addon[0])
+	let zip = new JSZip()
+	select_imput_addon[0].forEach((value) => {
+		const blob = new Blob([addonExport([value])],{type:"application/octet-stream"});
+		console.log(inportAddons[value].name.slice(0,-1).replace( /[\\\/:\*\?\"<>\|]/, "") + ".pak")
+		zip.file(inportAddons[value].name.slice(0,-1).replace( /[\\\/:\*\?\"<>\|]/, "") + ".pak",blob)
+	})
+	zip.generateAsync({type:"blob",compression:"DEFLATE"})
+		.then(function(value){
+	const link = document.createElement("a");
+	link.download = "Export.zip";
+	link.href = URL.createObjectURL(value);
+	link.click();
+	URL.revokeObjectURL(link.href);}
+		)
 })
