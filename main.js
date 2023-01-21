@@ -357,15 +357,14 @@ HTML_BUTTON_SINGL_ADDON.addEventListener("click", function(){
 	let zip = new JSZip()
 	select_imput_addon[0].forEach((value) => {
 		const blob = new Blob([addonExport([value])],{type:"application/octet-stream"});
-		console.log(inportAddons[value].name.slice(0,-1).replace( /[\\\/:\*\?\"<>\|]/, "") + ".pak")
-		zip.file(inportAddons[value].name.slice(0,-1).replace( /[\\\/:\*\?\"<>\|]/, "") + ".pak",blob)
+		zip.file(inportAddons[value].name.slice(0,-1).replace( /[\\\/:\*\?\"\|]/, "_").replace( /[<]/, "(").replace( /[>]/, ")") + ".pak",blob)
 	})
 	zip.generateAsync({type:"blob",compression:"DEFLATE"})
 		.then(function(value){
-	const link = document.createElement("a");
-	link.download = "Export.zip";
-	link.href = URL.createObjectURL(value);
-	link.click();
-	URL.revokeObjectURL(link.href);}
+			const link = document.createElement("a");
+		link.download = "Export.zip";
+		link.href = URL.createObjectURL(value);
+		link.click();
+		URL.revokeObjectURL(link.href);}
 		)
 })
