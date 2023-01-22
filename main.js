@@ -6,6 +6,7 @@ const HTML_BUTTON_ADD_ADDON = document.getElementById("button_add_addon")
 const HTML_BUTTON_DEL_ADDON = document.getElementById("button_del_addon")
 const HTML_BUTTON_EXPORT_ADDON = document.getElementById("button_export_addon")
 const HTML_BUTTON_SINGL_ADDON = document.getElementById("button_singl_addon")
+const HTML_FOOTER = document.getElementById("footer")
 
 const SIMUTANS_PAK_HEADER = new Uint8Array([0x53,0x69,0x6D,0x75,0x74,0x72,0x61,0x6E,0x73,0x20,0x6F,0x62,0x6A,0x65,0x63,0x74,0x20,0x66,0x69,0x6C,0x65,0x0A,0x43,0x6F,0x6D,0x70,0x69,0x6C,0x65,0x64,0x20,0x77,0x69,0x74,0x68,0x20,0x53,0x69,0x6D,0x4F,0x62,0x6A,0x65,0x63,0x74,0x73,0x20,0x30,0x2E,0x31,0x2E,0x33,0x65,0x78,0x70,0x0A,0x1A,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00])
 
@@ -353,7 +354,9 @@ HTML_BUTTON_EXPORT_ADDON.addEventListener("click", function(){
 })
 
 HTML_BUTTON_SINGL_ADDON.addEventListener("click", function(){
-	console.log(select_imput_addon[0])
+	if (select_imput_addon[0].length == 0){
+		return
+	}
 	let zip = new JSZip()
 	select_imput_addon[0].forEach((value) => {
 		const blob = new Blob([addonExport([value])],{type:"application/octet-stream"});
@@ -367,4 +370,30 @@ HTML_BUTTON_SINGL_ADDON.addEventListener("click", function(){
 		link.click();
 		URL.revokeObjectURL(link.href);}
 		)
+})
+
+HTML_BUTTON_SINGL_ADDON.addEventListener("mouseover", function(){
+	HTML_FOOTER.innerHTML = "読み込んだアドオンのうちチェックの入ったアドオンを個別で出力します。"
+})
+HTML_BUTTON_ADD_ADDON.addEventListener("mouseover", function(){
+	HTML_FOOTER.innerHTML = "チェックの入ったアドオンを出力リストに追加します。"
+})
+HTML_BUTTON_DEL_ADDON.addEventListener("mouseover", function(){
+	HTML_FOOTER.innerHTML = "出力アドオンのリストからアドオンを削除します。"
+})
+HTML_BUTTON_EXPORT_ADDON.addEventListener("mouseover", function(){
+	HTML_FOOTER.innerHTML = "出力アドオンのリストを1つのアドオンファイルとして出力します。"
+})
+
+HTML_BUTTON_SINGL_ADDON.addEventListener("mouseout", function(){
+	HTML_FOOTER.innerHTML = ""
+})
+HTML_BUTTON_ADD_ADDON.addEventListener("mouseout", function(){
+	HTML_FOOTER.innerHTML = ""
+})
+HTML_BUTTON_DEL_ADDON.addEventListener("mouseout", function(){
+	HTML_FOOTER.innerHTML = ""
+})
+HTML_BUTTON_EXPORT_ADDON.addEventListener("mouseout", function(){
+	HTML_FOOTER.innerHTML = ""
 })

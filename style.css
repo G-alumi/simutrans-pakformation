@@ -29,7 +29,7 @@ body{
 	margin: 2px;
 	display: flex;
 	flex-wrap: wrap;
-	margin-bottom: 1rem;
+	margin-bottom: calc(1rem + 2px);
 }
 .column{
 	margin: 2px;
@@ -141,8 +141,11 @@ button:active{
 }
 
 .footer{
-	width: 100%;
+	width: calc(100% - 1rem);
+	padding: 0 0.5rem;
 	height: 1.5rem;
 	line-height: 1.5rem;
-	background-color: #eee2d3;
+	background-color: #a6c3ac;
+	white-space: nowrap;
+	overflow: hidden;
 }
